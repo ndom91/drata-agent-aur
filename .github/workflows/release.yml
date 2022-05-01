@@ -41,8 +41,7 @@ jobs:
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           host='aur.archlinux.org'
-          hosts="$(dig +short "$host" | grep -v '\.$' | sed -z 's|\n|,|g')$host"
-          ssh-keyscan -H "$hosts" > ~/.ssh/known_hosts
+          ssh-keyscan -H "$host" > ~/.ssh/known_hosts
       - name: Update PKGBUILD
         run: |
           ver=$(cat current-version.txt)
@@ -69,6 +68,10 @@ jobs:
           commit_message: Update AUR package
           ssh_keyscan_types: rsa,dsa,ecdsa,ed25519
           update_pkgver: false
-      # - name: Publish AUR package [manually]
-      #   run: |
-      #     git subtree push -P pkg aur@aur.archlinux.org:drata-agent.git master
+      - name: Update pkg subdirectory
+        if: ${{ success() }}
+        run: |
+          git config --global user.name 'ndom91'
+          git config --global user.email '7415984+ndom91@users.noreply.github.com'
+          git commit -am "New drata-agent ./pkg content - $(cat current-version.txt)"
+          git push
