@@ -26,13 +26,16 @@ jobs:
         run: |
           git config --global user.name 'ndom91'
           git config --global user.email '7415984+ndom91@users.noreply.github.com'
-          git commit -am "New drata-agent $(cat current-version.txt)"
+          git commit -am "New drata-agent - $(cat current-version.txt)"
           git push
   aur-publish:
     runs-on: ubuntu-latest
     if: ${{ false }} # ${{ needs.check-release.outputs.modified }} - Disable for now
     needs: check-release
     steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.REPO_TOKEN }}
       - name: Write SSH keys
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
@@ -47,8 +50,25 @@ jobs:
           wget https://cdn.drata.com/agent/dist/linux/drata-agent-"${ver:1}".deb
           sha512=$(sha512sum drata-agent-"${ver:1}".deb | cut -d' ' -f1)
           sed "s/sha512sums_x86_64=.*/sha512sums_x86_64=(\"$sha512\")/g" ./pkg/PKGBUILD
-          cd pkg
-          # TODO: makepkg on Ubuntu :thinking:
-          makepkg --printsrcinfo > .SRCINFO
-          cd ../
-          git subtree push -P pkg aur@aur.archlinux.org:drata-agent.git master
+      - name: Update .SRCINFO
+        uses: hapakaien/archlinux-package-action@v2
+        with:
+          flags: ''
+          path: pkg
+          namcap: false
+          srcinfo: true
+      - name: Publish AUR package
+        uses: ulises-jeremias/github-actions-aur-publish@v1
+        with:
+          pkgname: drata-agent
+          pkgbuild: ./pkg/PKGBUILD
+          assets: ./pkg/*
+          commit_username: ${{ secrets.AUR_USERNAME }}
+          commit_email: ${{ secrets.AUR_EMAIL }}
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+          commit_message: Update AUR package
+          ssh_keyscan_types: rsa,dsa,ecdsa,ed25519
+          update_pkgver: false
+      # - name: Publish AUR package [manually]
+      #   run: |
+      #     git subtree push -P pkg aur@aur.archlinux.org:drata-agent.git master
