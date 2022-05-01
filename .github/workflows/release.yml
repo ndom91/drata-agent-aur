@@ -1,0 +1,46 @@
+name: aur-publish
+
+on:
+  push:
+  schedule:
+    - cron: "0 2 * * *" # Every day @ 02:00
+
+jobs:
+  check-release:
+    runs-on: ubuntu-latest
+    if: ${{ false }} # Disable for now
+    outputs:
+      modified: ${{ steps.git-check.outputs.modified }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ secrets.REPO_TOKEN }}
+      - name: Fetch release version
+        run: |
+          curl -sL https://api.github.com/repos/drata/agent-releases/releases/latest | jq -r ".tag_name" > current-version.txt
+      - name: Check for modified files
+        id: git-check
+        run: echo ::set-output name=modified::"$([ -z "$(git status --porcelain)" ] && echo "false" || echo "true")"
+      - name: Commit latest release version
+        if: steps.git-check.outputs.modified == 'true'
+        run: |
+          git config --global user.name 'ndom91'
+          git config --global user.email '7415984+ndom91@users.noreply.github.com'
+          git commit -am "New drata-agent $(cat current-version.txt)"
+          git push
+  aur-publish:
+    runs-on: ubuntu-latest
+    if: ${{ false }} # ${{ needs.check-release.outputs.modified }} - Disable for now
+    needs: check-release
+    steps:
+      - name: Update PKGBUILD
+        run: |
+          ver=$(cat current-version.txt)
+          sed "s/pkgver=.*/pkgver=${ver:1}/g" ./pkg/PKGBUILD
+          wget https://cdn.drata.com/agent/dist/linux/drata-agent-"${ver:1}".deb
+          sha512=$(sha512sum drata-agent-"${ver:1}".deb | cut -d' ' -f1)
+          sed "s/sha512sums_x86_64=.*/sha512sums_x86_64=(\"$sha512\")/g" ./pkg/PKGBUILD
+          cd pkg
+          # TODO: makepkg on Ubuntu :thinking:
+          makepkg --printsrcinfo > .SRCINFO
+          git subtree push -P "drata-agent" aur@aur.archlinux.org:drata-agent.git master
