@@ -8,7 +8,7 @@ on:
 jobs:
   check-release:
     runs-on: ubuntu-latest
-    if: ${{ false }} # Disable for now
+    # if: ${{ false }}
     outputs:
       modified: ${{ steps.git-check.outputs.modified }}
     steps:
@@ -30,7 +30,7 @@ jobs:
           git push
   aur-publish:
     runs-on: ubuntu-latest
-    if: ${{ false }} # ${{ needs.check-release.outputs.modified }} - Disable for now
+    if: ${{ needs.check-release.outputs.modified }}
     needs: check-release
     steps:
       - uses: actions/checkout@v2
@@ -68,7 +68,8 @@ jobs:
           commit_message: Update AUR package
           ssh_keyscan_types: rsa,dsa,ecdsa,ed25519
           update_pkgver: false
-      - name: Update pkg subdirectory
+          # force_push: true
+      - name: Update Github Repo
         if: ${{ success() }}
         run: |
           git config --global user.name 'ndom91'
