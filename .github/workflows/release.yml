@@ -23,7 +23,7 @@ jobs:
         run: echo ::set-output name=modified::"$([ -z "$(git status --porcelain)" ] && echo "false" || echo "true")"
   aur-publish:
     runs-on: ubuntu-latest
-    if: ${{ needs.check-release.outputs.modified }}
+    if: ${{ needs.check-release.outputs.modified == 'true' }}
     needs: check-release
     steps:
       - uses: actions/checkout@v2
