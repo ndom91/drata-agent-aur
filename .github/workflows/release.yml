@@ -24,7 +24,7 @@ jobs:
       - name: Echo modified
         run: |
           echo ${{ steps.git-check.outputs.modified }}
-          echo current-version.txt
+          cat current-version.txt
   aur-publish:
     runs-on: ubuntu-latest
     if: ${{ needs.check-release.outputs.modified == 'true' }}
