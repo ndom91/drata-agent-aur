@@ -1,10 +1,10 @@
-<img align="right" src="https://drata.com/wp-content/uploads/2021/09/drata-wordmark-dark.svg" width="320" />
+<img align="right" src="https://images.drata.com/x3hoqyjm3c27/KGLjH0qbRqmQ3Y3YVlSgB/2bb6cb13b1c98c0bff90931cdb332922/drata-wordmark-black.svg" width="320" />
 
 ## `drata-agent`
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/ndom91/drata-agent-aur)
 [![AUR version](https://img.shields.io/aur/version/drata-agent)](https://aur.archlinux.org/packages/drata-agent)
-[![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ndom91/drata-agent-aur/aur-publish?label=aur-publish)](https://github.com/ndom91/drata-agent-aur/actions/workflows/release.yml)
+[![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ndom91/drata-agent-aur/aur-publish?label=aur-publish)](https://github.com/ndom91/drata-agent-aur/actions/workflows/release.yml)
 
 AUR package of the [Drata](https://drata.com/) agent to be installed on employee computers.
 
