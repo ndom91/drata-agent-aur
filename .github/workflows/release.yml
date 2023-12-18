@@ -21,7 +21,7 @@ jobs:
         run: echo "modified=$([ -z "$(git status --porcelain)" ] && echo "false" || echo "true")" >> $GITHUB_ENV
       - name: Echo modified
         run: |
-          echo ${{ steps.git-check.outputs.modified }}
+          echo ${{ env.modified }}
           cat current-version.txt
   aur-publish:
     runs-on: ubuntu-latest
