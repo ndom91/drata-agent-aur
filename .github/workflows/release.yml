@@ -8,11 +8,10 @@ on:
 jobs:
   check-release:
     runs-on: ubuntu-latest
-    # if: ${{ false }}
-    outputs:
-      modified: ${{ steps.git-check.outputs.modified }}
     steps:
       - uses: actions/checkout@v3
+        with:
+          clean: true
       - name: Fetch release version
         run: |
           curl -sL https://api.github.com/repos/drata/agent-releases/releases/latest | jq -r ".tag_name" >| current-version.txt
