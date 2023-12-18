@@ -12,9 +12,7 @@ jobs:
     outputs:
       modified: ${{ steps.git-check.outputs.modified }}
     steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.REPO_TOKEN }}
+      - uses: actions/checkout@v3
       - name: Fetch release version
         run: |
           curl -sL https://api.github.com/repos/drata/agent-releases/releases/latest | jq -r ".tag_name" >| current-version.txt
