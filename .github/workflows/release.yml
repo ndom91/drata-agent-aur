@@ -18,7 +18,7 @@ jobs:
           curl -sL https://api.github.com/repos/drata/agent-releases/releases/latest | jq -r ".tag_name" >| current-version.txt
       - name: Check for modified files
         id: git-check
-        run: echo ::set-output name=modified::"$([ -z "$(git status --porcelain)" ] && echo "false" || echo "true")"
+        run: echo "modified=$([ -z "$(git status --porcelain)" ] && echo "false" || echo "true")" >> $GITHUB_ENV
       - name: Echo modified
         run: |
           echo ${{ steps.git-check.outputs.modified }}
@@ -28,9 +28,7 @@ jobs:
     if: ${{ needs.check-release.outputs.modified == 'true' }}
     needs: check-release
     steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.REPO_TOKEN }}
+      - uses: actions/checkout@v3
       - name: Write SSH keys
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
