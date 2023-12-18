@@ -10,13 +10,13 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       modified: ${{ env.modified }}
+      latestVersion: ${{ env.latestVersion }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          clean: true
       - name: Fetch release version
         run: |
           curl -sL https://api.github.com/repos/drata/agent-releases/releases/latest | jq -r ".tag_name" >| current-version.txt
+          echo "latestVersion=$(cat current-version.txt)" >> $GITHUB_ENV
       - name: Check for modified files
         id: git-check
         run: echo "modified=$([ -z "$(git status --porcelain)" ] && echo "false" || echo "true")" >> $GITHUB_ENV
@@ -38,7 +38,7 @@ jobs:
           ssh-keyscan -H "$host" > ~/.ssh/known_hosts
       - name: Update PKGBUILD
         run: |
-          ver=$(cat current-version.txt)
+          ver=${{ needs.check-release.outputs.latestVersion }}
           sed -i "s/pkgver=.*/pkgver=${ver:1}/g" ./pkg/PKGBUILD
           wget https://github.com/drata/agent-releases/releases/download/"${ver:1}"/Drata-Agent-linux.deb
           sha512=$(sha512sum drata-agent-"${ver:1}".deb | cut -d' ' -f1)
