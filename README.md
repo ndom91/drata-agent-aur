@@ -1,4 +1,4 @@
-<img align="right" src="https://images.drata.com/x3hoqyjm3c27/KGLjH0qbRqmQ3Y3YVlSgB/2bb6cb13b1c98c0bff90931cdb332922/drata-wordmark-black.svg" width="320" />
+<img align="right" src="https://drata.com/images/favicon-256x256.png" width="256" />
 
 ## `drata-agent`
 
