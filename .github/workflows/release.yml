@@ -8,6 +8,8 @@ on:
 jobs:
   check-release:
     runs-on: ubuntu-latest
+    outputs:
+      modified: ${{ env.modified }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -24,7 +26,7 @@ jobs:
           cat current-version.txt
   aur-publish:
     runs-on: ubuntu-latest
-    if: ${{ env.modified == 'true' }}
+    if: ${{ needs.check-release.outputs.modified == 'true' }}
     needs: check-release
     steps:
       - uses: actions/checkout@v4
