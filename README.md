@@ -1,4 +1,4 @@
-<img align="right" src="https://drata.com/images/favicon-256x256.png" width="256" />
+<img align="right" src="https://avatars.githubusercontent.com/u/65421071?v=4" width="256" />
 
 ## `drata-agent`
 
