@@ -40,7 +40,7 @@ jobs:
         run: |
           ver=${{ needs.check-release.outputs.latestVersion }}
           sed -i "s/pkgver=.*/pkgver=${ver:1}/g" ./pkg/PKGBUILD
-          wget https://github.com/drata/agent-releases/releases/download/"${ver:1}"/Drata-Agent-linux.deb
+          wget https://github.com/drata/agent-releases/releases/download/v"${ver:1}"/Drata-Agent-linux.deb
           sha512=$(sha512sum drata-agent-"${ver:1}".deb | cut -d' ' -f1)
           sed -i "s/sha512sums_x86_64=.*/sha512sums_x86_64=(\"$sha512\")/g" ./pkg/PKGBUILD
       - name: Update .SRCINFO
